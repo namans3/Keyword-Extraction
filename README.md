@@ -18,6 +18,7 @@ Now that we have the access credentials, we start with our tweet listener: Tweet
 
 # The code for TweetListener.py
 
+'''
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
@@ -27,3 +28,4 @@ access_token = "YOUR_ACCESS_TOKEN"
 access_token_secret = "YOUR_ACCESS_TOKEN_SECRET"
 consumer_key = "YOUR_CONSUMER_KEY"
 consumer_secret = "YOUR_CONSUMER_SECRET"
+'''
