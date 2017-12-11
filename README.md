@@ -42,16 +42,12 @@ access_token_secret = "YOUR_ACCESS_TOKEN_SECRET"
 consumer_key = "YOUR_CONSUMER_KEY"
 consumer_secret = "YOUR_CONSUMER_SECRET"
 ```
+
+Now we build a listener that receives the tweets and classifies them into positive and negative and puts them in two different files. This class 'Listener' is inherited from the StreamLister class
 ```
-#This is a basic listener that just prints received tweets to stdout.This class 'Listener' is inherited from the StreamLister class
 class Listener(tweepy.StreamListener):
 
     def __init__(self, start_time, time_limit=5):
-
-        self.time = start_time
-        self.limit = time_limit
-        self.num_tweets_p = 0
-        self.num_tweets_n = 0
 
     #on_data method of a stream listener receives all messages and calls functions according to the message type
     #the on_data method of Tweepy’s StreamListener conveniently passes data from statuses to the on_status method
