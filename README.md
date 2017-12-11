@@ -16,5 +16,5 @@ Generate Consumer Key and Consumer Secret and then create Access Token and Acces
 
 Now that we have the access credentials, we start with our tweet listener: TweetListener.py
 
-#The code for TweetListener.py
+# The code for TweetListener.py
 
