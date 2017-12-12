@@ -73,13 +73,16 @@ Then we parse through it to identify if there exists an 'extended_tweet' as we t
                     tweet = all_data["text"]
 ```
 
-Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal.
-
+Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal.Here we replace all emogis with � character as certaian emojies cause the file write operation to fail due to incompatible formats. We also remove newline characters.
 ```
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
             tweet = (tweet.translate(non_bmp_map))
             tweet = tweet.replace('\n', ' ')
             print("Original Tweet: " , tweet)
+```
+
+Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to seperat the tweets into two files <location>_p.txt for positive or neutral tweets with polarity >= 0, and <location>_n.txt for negative tweets with polarity < 0.  
+```
             blob = TextBlob(tweet)
             txtblb = blob.sentiment
             print (txtblb.polarity, txtblb.subjectivity)
@@ -107,7 +110,9 @@ Next comes the task to clean up the tweet so that it can be analysed and written
                 return True
             else:
                 return False
+```
 
+```
     def on_status(self, status):
         print (status.text)
 
@@ -117,8 +122,10 @@ Next comes the task to clean up the tweet so that it can be analysed and written
         if status == 420:
             return False
         print (status)
+```
 
-
+Now we create a function to access the twitter API for handling
+```
     def TweetListener(self, city):
         #create an object of the Listner class which was inherited from the StreamListener class
         myStreamListener = Listener("Ropa")
@@ -136,7 +143,10 @@ Next comes the task to clean up the tweet so that it can be analysed and written
         stream.disconnect()
 
 
+```
 
+During the main function call, we read the locations file for list of locations and run the Listener one by one for all cities in the list.
+```
 if __name__ == '__main__':
 
     loc = open('locations.txt','r')
