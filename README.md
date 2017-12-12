@@ -49,6 +49,14 @@ class Listener(tweepy.StreamListener):
 
     def __init__(self, start_time, time_limit=5):
 
+        self.time = start_time
+        self.limit = time_limit
+        self.num_tweets_p = 0
+        self.num_tweets_n = 0
+```
+Next, we read the data returend from Twitter API in JSON format. We load an entire json object into all_data.
+Then we parse through it to identify if there exists an 'extended_tweet' as we the 'text' key contains the value which is a truncated form of tweet. Therefore, if we want to get the entire tweet, we go to the 'extended_tweet' key values. If extended_tweet key does not exist, it means that the text itself is complete.
+```
     #on_data method of a stream listener receives all messages and calls functions according to the message type
     #the on_data method of Tweepy’s StreamListener conveniently passes data from statuses to the on_status method
     def on_data(self, data):
@@ -63,7 +71,11 @@ class Listener(tweepy.StreamListener):
                         tweet = all_data["extended_tweet"]["full_text"]
                 else:
                     tweet = all_data["text"]
+```
 
+Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal.
+
+```
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
             tweet = (tweet.translate(non_bmp_map))
             tweet = tweet.replace('\n', ' ')
