@@ -43,7 +43,7 @@ consumer_key = "YOUR_CONSUMER_KEY"
 consumer_secret = "YOUR_CONSUMER_SECRET"
 ```
 
-Now we build a listener that receives the tweets and classifies them into positive and negative and puts them in two different files. This class 'Listener' is inherited from the StreamLister class
+Now we build a listener that receives the tweets and classifies them into positive and negative and puts them in two different files. This class 'Listener' is inherited from the StreamLister class.
 ```
 class Listener(tweepy.StreamListener):
 
@@ -81,7 +81,7 @@ Next comes the task to clean up the tweet so that it can be analysed and written
             print("Original Tweet: " , tweet)
 ```
 
-Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to seperat the tweets into two files <location>_p.txt for positive or neutral tweets with polarity >= 0, and <location>_n.txt for negative tweets with polarity < 0.  
+Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to seperat the tweets into two files 'location'_p.txt for positive or neutral tweets with polarity >= 0, and 'location'_n.txt for negative tweets with polarity < 0.  
 ```
             blob = TextBlob(tweet)
             txtblb = blob.sentiment
@@ -97,43 +97,20 @@ Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity sco
                 output.write(tweet)
                 output.write('\n') 
                 output.close()
-                #return True
             else:
                 self.num_tweets_n += 1
                 output=open(neg_filename,"a", encoding='utf-8')
                 output.write(tweet)
                 output.write('\n')
                 output.close()
-                #return True
             
-            if self.num_tweets_p < 500 or self.num_tweets_n < 500:
-                return True
-            else:
-                return False
 ```
 
+Now we create a function to access the twitter API for handling.This function receives an object of class Listener and the city name as parameters. We first create an oAuthHandler instance to handle twitter authentication and connection to Twitter Streaming API. Then we use the predefined Stream function in Tweepy to stream the tweets. We apply a filter based on the city and for language = en to capture only english tweets. After this, we set a sleep time of 1200s which can be varied. Tweets will keep stream during this sleep time and then the stream shall be disconnected.
 ```
-    def on_status(self, status):
-        print (status.text)
-
-        
-    # We can use on_error to catch 420 errors and disconnect our stream.
-    def on_error(self, status):
-        if status == 420:
-            return False
-        print (status)
-```
-
-Now we create a function to access the twitter API for handling
-```
-    def TweetListener(self, city):
-        #create an object of the Listner class which was inherited from the StreamListener class
-        myStreamListener = Listener("Ropa")
-
-        print("####################### Starting to listen to ", city)
-
-        #This handles Twitter authetification and the connection to Twitter Streaming API
+    def TweetListener(self, myStreamListener, city):       
         #create an OAuthHandler instance
+        #This handles Twitter authetification and the connection to Twitter Streaming API
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
@@ -141,18 +118,15 @@ Now we create a function to access the twitter API for handling
         stream.filter(track=[city], async = True, languages=["en"])
         time.sleep(1200)
         stream.disconnect()
-
-
 ```
 
-During the main function call, we read the locations file for list of locations and run the Listener one by one for all cities in the list.
+In the main function call, we read the locations file for list of locations and run TweetListener function one by one for all cities in the list. In a loop we We create an object of the Listener class. Then for every city in the location.txt file, we call the TweetListener function passing the object and the location name. This will run the function untill the sleep time is over and then the next location name will be read from the file and TweetListener start a new stream for that location. In this case, I have only done a single run through all locations but for practical purposes, this process could be set to repeat at a desired frequencty to keep the data up to date.
 ```
 if __name__ == '__main__':
-
     loc = open('locations.txt','r')
+    MyListener = Listener("Naman")
     for line in loc.readlines():
-        MyListener = Listener("Naman")
         location = line.rstrip('\n')
-        Listener.TweetListener(True,location)
+        Listener.TweetListener(True, MyListener, location)
 ```
 
