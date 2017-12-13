@@ -11,6 +11,7 @@ Install sys: pip install sys
 Twitter Account.
 
 #Creating Twitter App
+
 To stream twitter data, we need 4 authentication keys and the following steps are to be followed.
 
 Go to https://apps.twitter.com and click in 'Create New App' and fill in the requested information.
