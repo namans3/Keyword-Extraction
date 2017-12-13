@@ -21,7 +21,7 @@ Generate Consumer Key and Consumer Secret and then create Access Token and Acces
 
 Now that we have the access credentials, we start with our tweet listener: TweetListener.py
 
-# Connecting to Twitter Streaming API
+# Streaming Tweets using Twitter Streaming API
 
 Import the libraries
 ```
@@ -130,3 +130,4 @@ if __name__ == '__main__':
         Listener.TweetListener(True, MyListener, location)
 ```
 
+# Keyword extraction of from Tweets using TF-IDF
