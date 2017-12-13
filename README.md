@@ -10,7 +10,7 @@ Instalal json: pip install json
 Install sys: pip install sys
 Twitter Account.
 
-#Creating Twitter App
+# Creating Twitter App
 
 To stream twitter data, we need 4 authentication keys and the following steps are to be followed.
 
@@ -20,7 +20,7 @@ After successfully creating an app, navigate to 'Keys and Access Tokens' section
 
 Generate Consumer Key and Consumer Secret and then create Access Token and Access Token Secret.
 
-Now that we have the access credentials, we start with our tweet listener: TweetListener.py
+Now that we have the access credentials, we start coding our tweet listener. Refer to TweetListener.py in the repository.
 
 # Streaming Tweets using Twitter Streaming API
 
@@ -37,7 +37,7 @@ declare a global variable 'location' that would capture the city name.
 global location
 ```
 
-Add the following variables that would contains yours credentials to access Twitter API. Add the tokens created here as shown below: 
+Add the following variables that would contains your twitter app credentials to access Twitter API. Add the keys and tokens created above as shown below:
 ```
 access_token = "YOUR_ACCESS_TOKEN"
 access_token_secret = "YOUR_ACCESS_TOKEN_SECRET"
