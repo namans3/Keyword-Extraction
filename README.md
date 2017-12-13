@@ -25,9 +25,10 @@ Now that we have the access credentials, we start with our tweet listener: Tweet
 
 Import the libraries
 ```
-from tweepy.streaming import StreamListener
-from tweepy import OAuthHandler
-from tweepy import Stream
+import tweepy
+import textblob from TextBlob
+import json
+import sys
 ```
 
 declare a global variable 'location' that would capture the city name.
