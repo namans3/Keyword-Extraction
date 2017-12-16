@@ -11,10 +11,10 @@ import sys
 global location
 
 #Variables that contains the user credentials to access Twitter API
-access_token = "307949032-2jwo2hI1ZQB6WEkeqXHzi78bmmqiyeL6FTjYiQRz"
-access_token_secret = "XqaiWQ7VEls2jmyApJUiCTA6fGb3lJZsFMJybG83WGFSF"
-consumer_key = "qXqA2aSvW9C4DhkFfpOscaZ64"
-consumer_secret = "aAoGjy0ABSo6rEpOrcBoLuIgZB746QRW9QVDvTU1JvAYcblPhC"
+access_token = "YOUR ACCESS TOKEN HERE"
+access_token_secret = "YOUR ACCESS TOKEN SECRET HERE"
+consumer_key = "YOUR CONSUMER KEY HERE"
+consumer_secret = "YOUR CONSUMER KEY SECRET HERE"
 
 start_time = time.time() #grabs the system time
 
