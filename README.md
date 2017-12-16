@@ -136,6 +136,6 @@ if __name__ == '__main__':
 
 # Keyword extraction of from Tweets using TF-IDF
 TF-IDF, which stands for Term Frequency – Inverse Document Frequency, is a basic yet an effective method to extract keywords from text.
-You can read more on wikipedia [here][]. 
-[here] : https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+You can read more on wikipedia [here]. 
+[here]: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 
