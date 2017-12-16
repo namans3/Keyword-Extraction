@@ -24,7 +24,9 @@ Now that we have the access credentials, we start coding our tweet listener. Ref
 
 # Streaming Tweets using Twitter Streaming API
 
-Import the libraries
+Refer to the file TweetListener.py
+
+We start with importing the libraries that we would need. We use Tweepy for connecting to twitter and streamaing tweets. Since twitter API streams tweets as json objects, we use the json library to use finctions to extract the text of the tweet from the json object. Then we use textbolb to convert tweets into blobs (which is a list of words in the tweets) and doing sentiment analysis using the inbuilt functions. sys is quite useful for determining the file locations on a system.
 ```
 import tweepy
 import textblob from TextBlob
@@ -32,7 +34,7 @@ import json
 import sys
 ```
 
-declare a global variable 'location' that would capture the city name.
+declare a global variable 'location' that would capture the location name to be searched for when listening the tweets.
 ```
 global location
 ```
@@ -133,3 +135,7 @@ if __name__ == '__main__':
 ```
 
 # Keyword extraction of from Tweets using TF-IDF
+TF-IDF, which stands for Term Frequency – Inverse Document Frequency, is a basic yet an effective method to extract keywords from text.
+You can read more on wikipedia [here][]. 
+[here] : https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+
