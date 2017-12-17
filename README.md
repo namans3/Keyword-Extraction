@@ -140,3 +140,141 @@ You can read more on wikipedia [here].
 
 [here]: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 
+In this project, we have used textblob to tokenize the words of tweets and we have developed functions to calculate TF and IDF scores based on which we rank all words and then extract the top 10 words in both  
+
+Refer to the file TFIDFExtract.py in the repository. Code explaination is as below:
+
+We import the following libraries:
+```
+import math #for calculations
+from textblob import TextBlob #for word tokenisation
+import time #for measurement of time
+import re #used in cleaning tweets
+import string #used in cleaning tweets
+from nltk.corpus import stopwords #for removing stopwords from tweets
+import sys #for reading system arguments
+import json #writing the results into json file
+```
+### Reading the tweets from files
+
+First we need to read the tweets from the files: <location>_p.txt and <location>_n.txt into seperate blobs of positive and negative tweets.
+
+```
+#Reading the positive tweets file <location>_p.txt
+file=open((sys.path[0] + "\\Tweets\\" + location + "_p.txt"),"r", encoding='utf-8');
+all_tweets=""
+for line in file:
+    all_tweets = all_tweets + " " + clean_tweet(line)
+positiveblob = TextBlob(all_tweets)
+file.close()
+
+file=open((sys.path[0] + "\\Tweets\\" + location + "_n.txt"),"r", encoding='utf-8');
+all_tweets=""
+for line in file:
+    all_tweets = all_tweets + " " + clean_tweet(line)
+negativeblob = TextBlob(all_tweets)
+file.close()
+```
+In the code above, we have used the clean_tweet function to clean up the tweet by removing generale english stopwords, punctuations, twitter specific text like RT for retweets, twitter handles and hyperlinks. 
+
+```
+def clean_tweet(tweet):
+
+    #setting stop_word list
+    punctuations = list(string.punctuation)
+    stop_words = stopwords.words('english') + punctuations + ['RT', 'via', 'https', ':',"...","amp"] + location.lower().split()
+    
+    #Removing twitter handles which start with @
+    tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith('@'))
+
+    #Removing words which are starating with ' (some words like 'nt etc end up in the blobs)
+    tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith("'"))
+    
+    "Removing hyperlinks
+    tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith('http'))
+    
+    #Convertig the tweet to lower text
+    tweet = tweet.lower()
+    
+    #Extracting word tokes into TextBlob
+    word_tokens = TextBlob(tweet)    
+    
+    #Reconstructing cleaned tweet
+    cleaned_tweet = ""
+    for word in word_tokens.words:
+        if word not in stop_words and len(word) > 3:
+            cleaned_tweet +=(' ' + word)
+
+    return(cleaned_tweet)
+```
+
+Since we are using TF-IDF scoring, we will need a background collection of generic tweets so we can calculate a good IDF score for the words. Therefore, we are also reading a background collection file.
+
+```
+background = []
+cleanedTweet=""
+count= 1
+with open('RandomCollection.txt',"r", encoding='utf-8') as f:
+    for line in f:
+        cleanedTweet = clean_tweet(line)
+        background.append({"Tweet": count, "text": cleanedTweet, "blob": TextBlob(cleanedTweet)})
+    count+=1
+```
+
+Now we define the functions to calculate TF-IDF. We begin with a function for calculating term frequency.
+```
+def tf(word, blob):
+    return blob.words.count(word) / len(blob.words)
+```
+
+A document frequency function, which counts the number of tweets in the background collection which contain the word
+```
+def doc_freq(word, bloblist):
+    return sum(1 for blob in bloblist if word in blob.words)
+```
+
+A function to calculate the inverse document frequency for a word based on the background collection of tweets
+```
+def idf(word, bloblist):
+    return math.log(len(bloblist) / (1 + doc_freq(word, bloblist)))
+```
+
+Finally, a function to calculate the TF-IDF scores which basically just muluplies the TF and IDF scores and returns the product.
+```
+def tdidf(word, blob, bloblist):
+    return tf(word, blob) * idf(word, bloblist)
+```
+
+We setup a function scorewords which would calculate the TF-IDF score through the functions described above for all the words in a blob (positiveblob or negativeblob) and then it sorts the words in decending order of magnitude of the score.
+```
+def scorewords(blob, blobs):
+    scores = {word: tdidf(word, blob, blobs) for word in blob.words}
+    return sorted(scores.items(), key=lambda x: x[1], reverse=True)
+```
+
+We write the keywords from positive and negative blobs into two seperate lists
+```
+positive_tweet_keywords=[]
+word_scores = scorewords(positiveblob, [Tweet["blob"] for Tweet in background])
+for word, score in word_scores[:10]:
+        positive_tweet_keywords.append(word)
+        
+negative_tweet_keywords=[]
+word_scores = scorewords(negativeblob, [Tweet["blob"] for Tweet in background])
+for word, score in word_scores[:10]:
+        negative_tweet_keywords.append(word)
+K``
+
+Now we create a json object called "keywords" to write the positive and negative keyword lists as key:value pairs. Then we read the existing keywords.json file from the repositry and copy it to a json object called data. We add the newly calculated keywords for the location into the data object and then we write it back to the Keywords.json file. This file can then be consumed for any other application which needs to fetch the keywords for a given location.
+```
+keywords = {}
+keywords["positive-tweets"] = positive_tweet_keywords
+keywords["negative-tweets"] = negative_tweet_keywords
+
+data = json.load(open(sys.path[0] + "\\Keywords.json"))
+
+data[location] = keywords
+
+with open((sys.path[0] + "\\Keywords.json"), 'w') as outfile:
+    json.dump(data, outfile)
+```
