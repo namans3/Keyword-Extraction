@@ -263,7 +263,8 @@ negative_tweet_keywords=[]
 word_scores = scorewords(negativeblob, [Tweet["blob"] for Tweet in background])
 for word, score in word_scores[:10]:
         negative_tweet_keywords.append(word)
-K``
+        
+```
 
 Now we create a json object called "keywords" to write the positive and negative keyword lists as key:value pairs. Then we read the existing keywords.json file from the repositry and copy it to a json object called data. We add the newly calculated keywords for the location into the data object and then we write it back to the Keywords.json file. This file can then be consumed for any other application which needs to fetch the keywords for a given location.
 ```
