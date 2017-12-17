@@ -1,7 +1,7 @@
 # Keyword Extraction from Tweets
 This is a python based program to get live stream of tweets filtered based on specific set of cities and classified into two sets i.e. positive and negative tweets. Each set is then analysed to extract top 10 keywords in the set.
 
-# Requirements
+## Requirements
 
 - Python 3.0 installed.
 - Install Tweepy: pip install tweepy
@@ -12,7 +12,7 @@ This is a python based program to get live stream of tweets filtered based on sp
 - Install nltk: pip install nltk
 - A Twitter Account.
 
-# Creating Twitter App
+## Creating Twitter App
 
 To stream twitter data, we need 4 authentication keys and the following steps are to be followed.
 
@@ -24,7 +24,7 @@ Generate Consumer Key and Consumer Secret and then create Access Token and Acces
 
 Now that we have the access credentials, we start coding our tweet listener. Refer to TweetListener.py in the repository.
 
-# Streaming Tweets using Twitter Streaming API
+## Streaming Tweets using Twitter Streaming API
 
 Refer to the file TweetListener.py
 
@@ -136,7 +136,7 @@ if __name__ == '__main__':
         Listener.TweetListener(True, MyListener, location)
 ```
 
-# Keyword extraction of from Tweets using TF-IDF
+# Keyword extraction using TF-IDF scoring
 TF-IDF, which stands for Term Frequency – Inverse Document Frequency, is a basic yet an effective method to extract keywords from text.
 You can read more on wikipedia [here]. 
 
@@ -177,6 +177,8 @@ for line in file:
 negativeblob = TextBlob(all_tweets)
 file.close()
 ```
+### Cleaning Tweets
+
 In the code above, we have used the clean_tweet function to clean up the tweet by removing generale english stopwords, punctuations, twitter specific text like RT for retweets, twitter handles and hyperlinks. 
 
 ```
@@ -223,6 +225,8 @@ with open('RandomCollection.txt',"r", encoding='utf-8') as f:
     count+=1
 ```
 
+### TF-IDF Calculation
+
 Now we define the functions to calculate TF-IDF. We begin with a function for calculating term frequency.
 ```
 def tf(word, blob):
@@ -254,6 +258,7 @@ def scorewords(blob, blobs):
     return sorted(scores.items(), key=lambda x: x[1], reverse=True)
 ```
 
+### Output as json
 We write the keywords from positive and negative blobs into two seperate lists
 ```
 positive_tweet_keywords=[]
