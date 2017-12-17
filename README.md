@@ -3,12 +3,14 @@ This is a python based program to get live stream of tweets filtered based on sp
 
 # Requirements
 
-Python 3.0 installed.
-Install Tweepy: pip install tweepy
-Install Textblob: pip install Textbolb
-Instalal json: pip install json
-Install sys: pip install sys
-Twitter Account.
+- Python 3.0 installed.
+- Install Tweepy: pip install tweepy
+- Install Textblob: pip install Textbolb
+- Instalal json: pip install json
+- Install sys: pip install sys
+- Install math: pip install math
+- Install nltk: pip install nltk
+- A Twitter Account.
 
 # Creating Twitter App
 
@@ -279,3 +281,9 @@ data[location] = keywords
 with open((sys.path[0] + "\\Keywords.json"), 'w') as outfile:
     json.dump(data, outfile)
 ```
+
+## Installation and execution
+- To install, simply download the repository into a local folder in your machine.
+- Ensure you have python installed
+- Install all the needed libraries as indicated in the beginning.
+
