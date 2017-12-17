@@ -61,10 +61,9 @@ class Listener(tweepy.StreamListener):
 Next, we read the data returend from Twitter API in JSON format. We load an entire json object into all_data.
 Then we parse through it to identify if there exists an 'extended_tweet' as we the 'text' key contains the value which is a truncated form of tweet. Therefore, if we want to get the entire tweet, we go to the 'extended_tweet' key values. If extended_tweet key does not exist, it means that the text itself is complete.
 ```
-    #on_data method of a stream listener receives all messages and calls functions according to the message type
-    #the on_data method of Tweepy’s StreamListener conveniently passes data from statuses to the on_status method
     def on_data(self, data):
         all_data = json.loads(data)       
+
         if 'text' in all_data:
             if 'retweeted_status' in all_data:
                 if 'extended_tweet' in all_data['retweeted_status']:
@@ -112,14 +111,21 @@ Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity sco
 
 Now we create a function to access the twitter API for handling.This function receives an object of class Listener and the city name as parameters. We first create an oAuthHandler instance to handle twitter authentication and connection to Twitter Streaming API. Then we use the predefined Stream function in Tweepy to stream the tweets. We apply a filter based on the city and for language = en to capture only english tweets. After this, we set a sleep time of 1200s which can be varied. Tweets will keep stream during this sleep time and then the stream shall be disconnected.
 ```
-    def TweetListener(self, myStreamListener, city):       
-        #create an OAuthHandler instance
+    def TweetListener(self, myStreamListener, city):
+
+        print("Listen to tweets for ", city, "...",'\n')
         #This handles Twitter authetification and the connection to Twitter Streaming API
+        #create an OAuthHandler instance
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         stream = tweepy.streaming.Stream(auth, myStreamListener)
+
+        #In the filter function we can specify the the words we would like to filter the tweets by using track=[parameters] and also specify tweet language
+        #Filtering can also be done by providig geo coordinates of a location and using location based filtering. In this case, I am using city name based filter
         stream.filter(track=[city], async = True, languages=["en"])
+
+        #Set the time limit of listening tweets for each location in the location.txt file here.
         time.sleep(1200)
         stream.disconnect()
 ```
@@ -134,7 +140,7 @@ if __name__ == '__main__':
         Listener.TweetListener(True, MyListener, location)
 ```
 
-# Keyword extraction using TF-IDF scoring
+## Keyword extraction using TF-IDF scoring
 TF-IDF, which stands for Term Frequency – Inverse Document Frequency, is a basic yet an effective method to extract keywords from text.
 You can read more on wikipedia [here]. 
 
@@ -300,3 +306,10 @@ with open((sys.path[0] + "\\Keywords.json"), 'w') as outfile:
 - In commanad line write TFIDFExtract.py and run
 - Keywords will be extracted for one location at a time and will be written into the Keyword.json file
 
+## References
+1.  Less Than Dot - Blog - Automated Keyword Extraction – TF-IDF, RAKE, and TextRank. (n.d.). Retrieved October 20, 2017, from http://blogs.lessthandot.com/index.php/artificial-intelligence/automated-keyword-extraction-tf-idf-rake-and-textrank/
+2.	An Introduction to Text Mining using Twitter Streaming API and Python. (n.d.). Retrieved October 20, 2017, from http://adilmoujahid.com/posts/2014/07/twitter-analytics/
+3.	TextBlob: Simplified Text Processing. (n.d.). Retrieved October 23, 2017, from https://textblob.readthedocs.io/en/dev
+4.	Zhai, C., & Massung, S. (2016). Text data management and analysis: a practical introduction to information retrieval and text mining. New York: Association for Computing Machinery
+5.	F. (2017, November 20). Fabianvf/python-rake. Retrieved November 05, 2017, from https://github.com/fabianvf/python-rake
+6.	D. (2017, July 28). Davidadamojr/TextRank. Retrieved November 15, 2017, from https://github.com/davidadamojr/TextRank
