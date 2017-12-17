@@ -51,12 +51,10 @@ consumer_secret = "YOUR_CONSUMER_SECRET"
 
 Now we build a listener that receives the tweets and classifies them into positive and negative and puts them in two different files. This class 'Listener' is inherited from the StreamLister class.
 ```
+#This is a basic listener that streams tweets and writes them into files. This class 'Listener' is inherited from the StreamLister class
 class Listener(tweepy.StreamListener):
 
-    def __init__(self, start_time, time_limit=5):
-
-        self.time = start_time
-        self.limit = time_limit
+    def __init__(self):
         self.num_tweets_p = 0
         self.num_tweets_n = 0
 ```
