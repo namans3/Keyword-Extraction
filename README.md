@@ -285,5 +285,15 @@ with open((sys.path[0] + "\\Keywords.json"), 'w') as outfile:
 ## Installation and execution
 - To install, simply download the repository into a local folder in your machine.
 - Ensure you have python installed
-- Install all the needed libraries as indicated in the beginning.
+- Install all the needed libraries as indicated in the beginning using pip install from command line or other methods.
+- Register twitter app on https://apps.twitter.com and get access credentials and add them to the TweetListener.py file as indicated in the code.
+- Write the list of location names in the Location.txt file in the repository.
+- Set the timelimit for listening to one location in the TweetListener.py file.
+- Tweets will start coming into the Tweets folder
+- Go to command line and change directory 'cd' to the file location where the repository is located in your local machine
+- In commanad line write TweetListener.py and run
+- Tweets will start streaming and all will be written into files in Twitter folder in the repository.
+- After having listened to tweets of all the specified locations, run the keyword extraction can begin
+- In commanad line write TFIDFExtract.py and run
+- Keywords will be extracted for one location at a time and will be written into the Keyword.json file
 
