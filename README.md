@@ -34,6 +34,7 @@ import tweepy
 import textblob from TextBlob
 import json
 import sys
+import time
 ```
 
 declare a global variable 'location' that would capture the location name to be searched for when listening the tweets.
@@ -76,7 +77,7 @@ Then we parse through it to identify if there exists an 'extended_tweet' as we t
                     tweet = all_data["text"]
 ```
 
-Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal. Here we replace all emojis with � character as certaian emojies cause the file write operation to fail due to incompatible formats. We also remove newline characters.
+We do some basic clean up of the incoming tweet so that it can be written into a file or printed on the terminal. Here we replace all emojis with � character as certaian emojies cause the file write operation to fail due to incompatible formats. We also remove newline characters.
 ```
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
             tweet = (tweet.translate(non_bmp_map))
@@ -84,28 +85,34 @@ Next comes the task to clean up the tweet so that it can be analysed and written
             print("Original Tweet: " , tweet)
 ```
 
-Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to separate the tweets into two files 'location'_p.txt for positive or neutral tweets with polarity >= 0, and 'location'_n.txt for negative tweets with polarity < 0.  
+We create a TextBlob of the tweet and use its inbuilt sentiment polarity score to separate the tweets into two files 'location'_p.txt for positive or neutral tweets with polarity >= 0, and 'location'_n.txt for negative tweets with polarity < 0.  
 ```
+            #Creating a blob using TextBlob which tokenizes the words of the tweet. We then use the sentiment function of
+            #TextBlob to identify the sentiment polarity.
             blob = TextBlob(tweet)
             txtblb = blob.sentiment
-            print (txtblb.polarity, txtblb.subjectivity)
-            print('\n')
+            print (txtblb.polarity, txtblb.subjectivity, '\n')
 
-            pos_filename = sys.path[0] + "\\Data\\" + location + "_p.txt"
-            neg_filename = sys.path[0] + "\\Data\\" + location + "_n.txt"
+            #Setting names of two file for positive and negative tweets
+            pos_filename = 'Tweets\\' + location + '_p.txt'
+            neg_filename = 'Tweets\\' + location + '_n.txt'
             
-            if (txtblb.polarity >= 0):
+            #When polarity is positive, then we write it to the positive file else we write it to the negative file.
+            if (txtblb.polarity > 0):
                 self.num_tweets_p += 1
                 output=open(pos_filename,"a", encoding='utf-8')
                 output.write(tweet)
                 output.write('\n') 
                 output.close()
+                #return True
             else:
                 self.num_tweets_n += 1
                 output=open(neg_filename,"a", encoding='utf-8')
                 output.write(tweet)
                 output.write('\n')
                 output.close()
+                #return True
+
             
 ```
 
@@ -113,16 +120,18 @@ Now we create a function to access the twitter API for handling. This function r
 ```
     def TweetListener(self, myStreamListener, city):
 
-        print("Listen to tweets for ", city, "...",'\n')
-        #This handles Twitter authetification and the connection to Twitter Streaming API
+        print("Listen to tweets for ", city, "...")
+        #This handles Twitter authentication and the connection to Twitter Streaming API
         #create an OAuthHandler instance
         auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         auth.set_access_token(access_token, access_token_secret)
         api = tweepy.API(auth)
         stream = tweepy.streaming.Stream(auth, myStreamListener)
 
-        #In the filter function we can specify the the words we would like to filter the tweets by using track=[parameters] and also specify tweet language
-        #Filtering can also be done by providig geo coordinates of a location and using location based filtering. In this case, I am using city name based filter
+        #In the filter function we can specify the words we would like to filter the tweets by using track=[parameters] 
+        #and also specify tweet language
+        #Filtering can also be done by providing geo coordinates of a location and using location based filtering. 
+        #In this case, we use city name based filter
         stream.filter(track=[city], async = True, languages=["en"])
 
         #Set the time limit of listening tweets for each location in the location.txt file here.
@@ -134,10 +143,13 @@ In the main function call, we read the locations file for list of locations and 
 ```
 if __name__ == '__main__':
     loc = open('locations.txt','r')
-    MyListener = Listener("Naman")
+    #create an object of the Listner class which was inherited from the StreamListener class
+    MyListener = Listener()
+
+    #For every location in location.txt file, we will listen to the tweets which will be recorded in files in Tweets folder
     for line in loc.readlines():
         location = line.rstrip('\n')
-        Listener.TweetListener(True, MyListener, location)
+        Listener.TweetListener(True,MyListener,location)
 ```
 
 ## Keyword extraction using TF-IDF scoring
@@ -166,20 +178,22 @@ import json #writing the results into json file
 First we need to read the tweets from the files: <location>_p.txt and <location>_n.txt into separate blobs of positive and negative tweets.
 
 ```
-#Reading the positive tweets file <location>_p.txt
-file=open((sys.path[0] + "\\Tweets\\" + location + "_p.txt"),"r", encoding='utf-8');
-all_tweets=""
-for line in file:
-    all_tweets = all_tweets + " " + clean_tweet(line)
-positiveblob = TextBlob(all_tweets)
-file.close()
+#Reading the positive tweets file <location>_p.txt and putting all words from all tweets in one blob.
+    file=open(('Tweets\\' + location + '_p.txt'),'r', encoding='utf-8');
+    all_tweets=""
+    for line in file:
+        all_tweets = all_tweets + " " + clean_tweet(line)
+    positiveblob = TextBlob(all_tweets)
+    file.close()
 
-file=open((sys.path[0] + "\\Tweets\\" + location + "_n.txt"),"r", encoding='utf-8');
-all_tweets=""
-for line in file:
-    all_tweets = all_tweets + " " + clean_tweet(line)
-negativeblob = TextBlob(all_tweets)
-file.close()
+    #Reading the negative tweets file <location>_n.txt and putting all words from all tweets in one blob.
+    file=open(('Tweets\\' + location + '_n.txt'),'r', encoding='utf-8');
+    all_tweets=""
+    for line in file:
+        all_tweets = all_tweets + " " + clean_tweet(line)
+    negativeblob = TextBlob(all_tweets)
+    file.close()
+    
 ```
 ### Cleaning Tweets
 
@@ -198,10 +212,10 @@ def clean_tweet(tweet):
     #Removing words which are starating with ' (some words like 'nt etc end up in the blobs)
     tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith("'"))
     
-    "Removing hyperlinks
+    #Removing hyperlinks
     tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith('http'))
     
-    #Convertig the tweet to lower text
+    #Convertig the tweet to lower case
     tweet = tweet.lower()
     
     #Extracting word tokes into TextBlob
@@ -219,14 +233,15 @@ def clean_tweet(tweet):
 Since we are using TF-IDF scoring, we will need a background collection of generic tweets so we can calculate a good IDF score for the words. Therefore, we are also reading a background collection file.
 
 ```
-background = []
-cleanedTweet=""
-count= 1
-with open('RandomCollection.txt',"r", encoding='utf-8') as f:
-    for line in f:
-        cleanedTweet = clean_tweet(line)
-        background.append({"Tweet": count, "text": cleanedTweet, "blob": TextBlob(cleanedTweet)})
-    count+=1
+    #Reading the background collection of tweets and  putting words of each tweet in different blobs stored in a list.
+    background = []
+    cleanedTweet=""
+    count= 1
+    with open('RandomCollection.txt','r', encoding='utf-8') as f:
+        for line in f:
+            cleanedTweet = clean_tweet(line)
+            background.append({"Tweet": count, "text": cleanedTweet, "blob": TextBlob(cleanedTweet)})
+        count+=1
 ```
 
 ### TF-IDF Calculation
