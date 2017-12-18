@@ -28,7 +28,7 @@ Now that we have the access credentials, we start coding our tweet listener. Ref
 
 Refer to the file TweetListener.py
 
-We start with importing the libraries that we would need. We use Tweepy for connecting to twitter and streamaing tweets. Since twitter API streams tweets as json objects, we use the json library to use finctions to extract the text of the tweet from the json object. Then we use textbolb to convert tweets into blobs (which is a list of words in the tweets) and doing sentiment analysis using the inbuilt functions. sys is quite useful for determining the file locations on a system.
+We start with importing the libraries that we would need. We use Tweepy for connecting to twitter and streaming tweets. Since twitter API streams tweets as json objects, we use the json library to use functions to extract the text of the tweet from the json object. Then we use textbolb to convert tweets into blobs (which is a list of words in the tweets) and doing sentiment analysis using the inbuilt functions. sys is quite useful for determining the file locations on a system.
 ```
 import tweepy
 import textblob from TextBlob
@@ -58,7 +58,7 @@ class Listener(tweepy.StreamListener):
         self.num_tweets_p = 0
         self.num_tweets_n = 0
 ```
-Next, we read the data returend from Twitter API in JSON format. We load an entire json object into all_data.
+Next, we read the data returned from Twitter API in JSON format. We load an entire json object into all_data.
 Then we parse through it to identify if there exists an 'extended_tweet' as we the 'text' key contains the value which is a truncated form of tweet. Therefore, if we want to get the entire tweet, we go to the 'extended_tweet' key values. If extended_tweet key does not exist, it means that the text itself is complete.
 ```
     def on_data(self, data):
@@ -76,7 +76,7 @@ Then we parse through it to identify if there exists an 'extended_tweet' as we t
                     tweet = all_data["text"]
 ```
 
-Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal.Here we replace all emogis with � character as certaian emojies cause the file write operation to fail due to incompatible formats. We also remove newline characters.
+Next comes the task to clean up the tweet so that it can be analysed and written into a file or printed on the terminal. Here we replace all emojis with � character as certaian emojies cause the file write operation to fail due to incompatible formats. We also remove newline characters.
 ```
             non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
             tweet = (tweet.translate(non_bmp_map))
@@ -84,7 +84,7 @@ Next comes the task to clean up the tweet so that it can be analysed and written
             print("Original Tweet: " , tweet)
 ```
 
-Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to seperat the tweets into two files 'location'_p.txt for positive or neutral tweets with polarity >= 0, and 'location'_n.txt for negative tweets with polarity < 0.  
+Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity score to separate the tweets into two files 'location'_p.txt for positive or neutral tweets with polarity >= 0, and 'location'_n.txt for negative tweets with polarity < 0.  
 ```
             blob = TextBlob(tweet)
             txtblb = blob.sentiment
@@ -109,7 +109,7 @@ Now we create a TextBlob of the tweet and use its inbuilt sentiment polarity sco
             
 ```
 
-Now we create a function to access the twitter API for handling.This function receives an object of class Listener and the city name as parameters. We first create an oAuthHandler instance to handle twitter authentication and connection to Twitter Streaming API. Then we use the predefined Stream function in Tweepy to stream the tweets. We apply a filter based on the city and for language = en to capture only english tweets. After this, we set a sleep time of 1200s which can be varied. Tweets will keep stream during this sleep time and then the stream shall be disconnected.
+Now we create a function to access the twitter API for handling. This function receives an object of Listener class and the city name as parameters. We first create an oAuthHandler instance to handle twitter authentication and connection to Twitter Streaming API. Then we use the predefined Stream function in Tweepy to stream the tweets. We apply a filter based on the city and for language = en to capture only English tweets. After this, we set a sleep time of 1200s which can be varied. Tweets will keep stream during this sleep time and then the stream shall be disconnected.
 ```
     def TweetListener(self, myStreamListener, city):
 
@@ -130,7 +130,7 @@ Now we create a function to access the twitter API for handling.This function re
         stream.disconnect()
 ```
 
-In the main function call, we read the locations file for list of locations and run TweetListener function one by one for all cities in the list. In a loop we We create an object of the Listener class. Then for every city in the location.txt file, we call the TweetListener function passing the object and the location name. This will run the function untill the sleep time is over and then the next location name will be read from the file and TweetListener start a new stream for that location. In this case, I have only done a single run through all locations but for practical purposes, this process could be set to repeat at a desired frequencty to keep the data up to date.
+In the main function call, we read the locations file for list of locations and run TweetListener function one by one for all cities in the list. In a loop we We create an object of the Listener class. Then for every city in the location.txt file, we call the TweetListener function passing the object and the location name. This will run the function until the sleep time is over and then the next location name will be read from the file and TweetListener start a new stream for that location. In this case, I have only done a single run through all locations but for practical purposes, this process could be set to repeat at a desired frequency to keep the data up to date.
 ```
 if __name__ == '__main__':
     loc = open('locations.txt','r')
@@ -142,13 +142,13 @@ if __name__ == '__main__':
 
 ## Keyword extraction using TF-IDF scoring
 TF-IDF, which stands for Term Frequency – Inverse Document Frequency, is a basic yet an effective method to extract keywords from text.
-You can read more on wikipedia [here]. 
+You can read more on Wikipedia [here]. 
 
 [here]: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
 
 In this project, we have used textblob to tokenize the words of tweets and we have developed functions to calculate TF and IDF scores based on which we rank all words and then extract the top 10 words in both  
 
-Refer to the file TFIDFExtract.py in the repository. Code explaination is as below:
+Refer to the file TFIDFExtract.py in the repository. Code explanation is as below:
 
 We import the following libraries:
 ```
@@ -163,7 +163,7 @@ import json #writing the results into json file
 ```
 ### Reading the tweets from files
 
-First we need to read the tweets from the files: <location>_p.txt and <location>_n.txt into seperate blobs of positive and negative tweets.
+First we need to read the tweets from the files: <location>_p.txt and <location>_n.txt into separate blobs of positive and negative tweets.
 
 ```
 #Reading the positive tweets file <location>_p.txt
@@ -183,7 +183,7 @@ file.close()
 ```
 ### Cleaning Tweets
 
-In the code above, we have used the clean_tweet function to clean up the tweet by removing generale english stopwords, punctuations, twitter specific text like RT for retweets, twitter handles and hyperlinks. 
+In the code above, we have used the clean_tweet function to clean up the tweet by removing general English stop words, punctuations, twitter specific text like RT for retweets, twitter handles and hyperlinks. 
 
 ```
 def clean_tweet(tweet):
@@ -249,13 +249,13 @@ def idf(word, bloblist):
     return math.log(len(bloblist) / (1 + doc_freq(word, bloblist)))
 ```
 
-Finally, a function to calculate the TF-IDF scores which basically just muluplies the TF and IDF scores and returns the product.
+Finally, a function to calculate the TF-IDF scores which basically just multiplies the TF and IDF scores and returns the product.
 ```
 def tdidf(word, blob, bloblist):
     return tf(word, blob) * idf(word, bloblist)
 ```
 
-We setup a function scorewords which would calculate the TF-IDF score through the functions described above for all the words in a blob (positiveblob or negativeblob) and then it sorts the words in decending order of magnitude of the score.
+We setup a function scorewords which would calculate the TF-IDF score through the functions described above for all the words in a blob (positiveblob or negativeblob) and then it sorts the words in descending order of magnitude of the score.
 ```
 def scorewords(blob, blobs):
     scores = {word: tdidf(word, blob, blobs) for word in blob.words}
@@ -263,7 +263,7 @@ def scorewords(blob, blobs):
 ```
 
 ### Output as json
-We write the keywords from positive and negative blobs into two seperate lists
+We write the keywords from positive and negative blobs into two separate lists.
 ```
 positive_tweet_keywords=[]
 word_scores = scorewords(positiveblob, [Tweet["blob"] for Tweet in background])
@@ -277,7 +277,7 @@ for word, score in word_scores[:10]:
         
 ```
 
-Now we create a json object called "keywords" to write the positive and negative keyword lists as key:value pairs. Then we read the existing keywords.json file from the repositry and copy it to a json object called data. We add the newly calculated keywords for the location into the data object and then we write it back to the Keywords.json file. This file can then be consumed for any other application which needs to fetch the keywords for a given location.
+Now we create a json object called "keywords" to write the positive and negative keyword lists as key:value pairs. Then we read the existing keywords.json file from the repository and copy it to a json object called data. We add the newly calculated keywords for the location into the data object and then we write it back to the Keywords.json file. This file can then be consumed for any other application which needs to fetch the keywords for a given location.
 ```
 keywords = {}
 keywords["positive-tweets"] = positive_tweet_keywords
@@ -297,13 +297,13 @@ with open((sys.path[0] + "\\Keywords.json"), 'w') as outfile:
 - Install all the needed libraries as indicated in the beginning using pip install from command line or other methods.
 - Register twitter app on https://apps.twitter.com and get access credentials and add them to the TweetListener.py file as indicated in the code.
 - Write the list of location names in the Location.txt file in the repository.
-- Set the timelimit for listening to one location in the TweetListener.py file.
+- Set the time limit for listening to one location in the TweetListener.py file.
 - Tweets will start coming into the Tweets folder.
-- Go to command line and change directory 'cd' to the file location where the repository is located in your local machine.
+- Go to command line and change directory 'cd' to the file location where the repository is saved in your local machine.
 - In command line write TweetListener.py and run.
 - Tweets will start streaming and all will be written into files in Twitter folder in the repository.
 - After having listened to tweets of all the specified locations, keyword extraction can begin.
-- In commanad line write TFIDFExtract.py and run.
+- In command line write TFIDFExtract.py and run.
 - Keywords will be extracted for one location at a time and will be written into the Keyword.json file.
 
 ## References
