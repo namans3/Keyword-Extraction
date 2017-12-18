@@ -58,8 +58,8 @@ class Listener(tweepy.StreamListener):
             print (txtblb.polarity, txtblb.subjectivity, '\n')
 
             #Setting names of two file for positive and negative tweets
-            pos_filename = sys.path[0] + "\\Tweets\\" + location + "_p.txt"
-            neg_filename = sys.path[0] + "\\Tweets\\" + location + "_n.txt"
+            pos_filename = 'Tweets\\' + location + '_p.txt'
+            neg_filename = 'Tweets\\' + location + '_n.txt'
             
             #When polarity is positive, then we write it to the positive file else we write it to the negative file.
             if (txtblb.polarity > 0):
