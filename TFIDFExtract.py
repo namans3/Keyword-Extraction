@@ -38,14 +38,23 @@ def clean_tweet(tweet):
     punctuations = list(string.punctuation)
     stop_words = stopwords.words('english') + punctuations + ['RT', 'via', 'https', ':',"...","amp"] + location.lower().split()
     
+    #Removing twitter handles which start with @
     tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith('@'))
+    
+    #Removing words which are starating with ' (some words like 'nt etc end up in the blobs)
     tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith("'"))
+    
+    #Removing hyperlinks
     tweet = ' '.join(word for word in tweet.split(' ') if not word.startswith('http'))
+    
+    #Convertig the tweet to lower case
     tweet = tweet.lower()
+    
+    #Extracting word tokes into TextBlob
     word_tokens = TextBlob(tweet)    
     
+    #Reconstructing cleaned tweet
     cleaned_tweet = ""
-
     for word in word_tokens.words:
         if word not in stop_words and len(word) > 3:
             cleaned_tweet +=(' ' + word)
@@ -88,7 +97,7 @@ for line in loc.readlines():
 
     #Extract keywords from blob of words from positive tweets and add the top 10 scored words in a list.  
         positive_tweet_keywords=[]
-    print("------------positive keywords ------------") #printing is optional      
+    print("Keywords from positive tweets on : ", location, '\n') #printing is optional      
     word_scores = scorewords(positiveblob, [Tweet["blob"] for Tweet in background])
     for word, score in word_scores[:10]:
             print("\rWord: {}, TF-IDF: {}".format(word, round(score, 10))) #printing is optional
@@ -96,7 +105,7 @@ for line in loc.readlines():
     
     #Extract keywords from blob of words from negative tweets and add the top 10 scored words in a list.
     negative_tweet_keywords=[]
-    print("------------negative keywords ------------") #printing is optional
+    print("Keywords from negative tweets on : ", location, '\n') #printing is optional
     word_scores = scorewords(negativeblob, [Tweet["blob"] for Tweet in background])
     for word, score in word_scores[:10]:
             print("\rWord: {}, TF-IDF: {}".format(word, round(score, 10))) #printing is optional
@@ -116,4 +125,3 @@ for line in loc.readlines():
     data[location] = keywords
     with open(('Keywords.json'), 'w') as outfile:
         json.dump(data, outfile)
-
