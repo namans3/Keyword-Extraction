@@ -11,11 +11,10 @@ import sys
 global location
 
 #Variables that contains the user credentials to access Twitter API. (Please specify your credentials below as indicated)
-access_token = "307949032-2jwo2hI1ZQB6WEkeqXHzi78bmmqiyeL6FTjYiQRz"
-access_token_secret = "XqaiWQ7VEls2jmyApJUiCTA6fGb3lJZsFMJybG83WGFSF"
-consumer_key = "qXqA2aSvW9C4DhkFfpOscaZ64"
-consumer_secret = "aAoGjy0ABSo6rEpOrcBoLuIgZB746QRW9QVDvTU1JvAYcblPhC"
-
+access_token = "YOUR_ACCESS_TOKEN"
+access_token_secret = "YOUR_ACCESS_TOKEN_SECRET"
+consumer_key = "YOUR_CONSUMER_KEY"
+consumer_secret = "YOUR_CONSUMER_SECRET"
 
 #This is a basic listener that streams tweets and writes them into files. This class 'Listener' is inherited from the StreamListener class
 class Listener(tweepy.StreamListener):
